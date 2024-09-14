@@ -17,10 +17,10 @@ Este es un proyecto de aplicación web de lista de tareas (To-Do List) desarroll
 ## Instalación
 
 1. Clona el repositorio:
-   git clone https://github.com/tu-usuario/tu-repositorio.git
+   git clone https://github.com/GariboGE/to_do_list_gariboge.git
+   
+3. Crea y activa un entorno virtual:
 
-2. Crea y activa un entorno virtual:
-
-3. Instle la dependencias
+4. Instle la dependencias
    pip install -r requirements.txt
 
