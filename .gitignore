@@ -2,32 +2,35 @@
 __pycache__/
 *.py[cod]
 *$py.class
- 
- 
+
 # Virtual environment
 venv/
 env/
 .env
- 
+
 # Flask
 .webassess-cache
- 
+
 # SQLite database
-*.db
+instance/*.db
 
 # Uploads
-static/Uploads/
- 
+static/uploads/*
+
+# Exclude the .gitkeep file to ensure the folder exists
+!static/uploads/.gitkeep
+!instance/.gitkeep
+
 # IDE specific files
 .vscode/
 .idea/
- 
+
 # OS generated files
 .DS_Store
 Thumbs.db
- 
+
 # Logs
 *.log
- 
+
 # Temporary files
 *.tmp
