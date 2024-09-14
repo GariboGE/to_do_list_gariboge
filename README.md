@@ -20,13 +20,13 @@ Este es un proyecto de aplicación web de lista de tareas (To-Do List) desarroll
    git clone https://github.com/GariboGE/to_do_list_gariboge.git
    
 3. Crea y activa un entorno virtual:
-  En Windows:
-      python -m venv venv
-      venv\Scripts\activate
+     - En Windows:
+         - python -m venv venv
+         - venv\Scripts\activate
    
-   En macOS/Linux:
-      python3 -m venv venv
-      source venv/bin/activate
+      - En macOS/Linux:
+         - python3 -m venv venv
+         - source venv/bin/activate
 
 5. Instle la dependencias:
    pip install -r requirements.txt
