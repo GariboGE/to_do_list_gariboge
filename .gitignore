@@ -10,7 +10,6 @@ env/
 .env
  
 # Flask
-instance/
 .webassess-cache
  
 # SQLite database
