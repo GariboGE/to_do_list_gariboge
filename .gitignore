@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+.pytest_cache
 *.py[cod]
 *$py.class
 
@@ -34,3 +35,6 @@ Thumbs.db
 
 # Temporary files
 *.tmp
+
+# Config files
+.flake8

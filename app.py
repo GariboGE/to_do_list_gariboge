@@ -1,5 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, abort
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Task
@@ -28,25 +27,33 @@ def index():
     else:
         return redirect(url_for('login'))
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login',methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username = form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('dashboard'))
         flash('Invalid username or password')
     return render_template('login.html', form=form)
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register',methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        # Verifica si el nombre de usuario ya existe
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Username not available, please choose another one', 'warning')
+            return redirect(url_for('register'))
+
+        # Si no existe, crea el nuevo usuario
         hashed_password = generate_password_hash(form.password.data)
         new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
+        flash('Account created successfully! Please log in.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -60,18 +67,16 @@ def dashboard():
             filename = secure_filename(form.image.data.filename)
             form.image.data.save(os.path.join('static/uploads', filename))
         new_task = Task(
-            title=form.title.data, 
-            description=form.description.data, 
-            priority=form.priority.data, 
-            owner=current_user, 
+            title=form.title.data,
+            description=form.description.data,
+            priority=form.priority.data,
+            owner=current_user,
             image=filename
         )
         db.session.add(new_task)
         db.session.commit()
         return redirect(url_for('dashboard'))
-
     tasks = Task.query.filter_by(owner=current_user).order_by(Task.priority).all()
-    
     return render_template('dashboard.html', form=form, tasks=tasks)
 
 @app.route('/logout')
@@ -86,7 +91,7 @@ def edit_task(task_id):
     task = Task.query.get_or_404(task_id)
     if task.owner != current_user:
         abort(403)
-    
+
     form = TaskForm(obj=task)
     if form.validate_on_submit():
         task.title = form.title.data
