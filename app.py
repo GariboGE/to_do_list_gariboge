@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Task
@@ -19,7 +19,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.session.get(User, int(user_id))  # Cambiar aquí
+    return db.session.get(User, int(user_id))
 
 
 @app.route('/')
@@ -34,7 +34,7 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = db.session.query(User).filter_by(username=form.username.data).first()  # Usar db.session.query aquí
+        user = db.session.query(User).filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('dashboard'))
@@ -42,14 +42,22 @@ def login():
     return render_template('login.html', form=form)
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register',methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        # If the User name alredy exists
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Username not available, please choose another one', 'warning')
+            return redirect(url_for('register'))
+
+        # If not exist create a new one
         hashed_password = generate_password_hash(form.password.data)
         new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
+        flash('Account created successfully! Please log in.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -85,23 +93,31 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/edit_task/<int:task_id>', methods=['POST'])
+@app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def edit_task(task_id):
-    task = db.session.get(Task, task_id)  # Cambiar aquí
-    if task and task.owner == current_user:
-        # Actualiza la tarea
-        task.title = request.form['title']
-        task.description = request.form['description']
-        task.priority = request.form['priority']
+    task = Task.query.get_or_404(task_id)
+    if task.owner != current_user:
+        abort(403)
+
+    form = TaskForm(obj=task)
+    if form.validate_on_submit():
+        task.title = form.title.data
+        task.description = form.description.data
+        task.priority = form.priority.data
+        if form.image.data:
+            filename = secure_filename(form.image.data.filename)
+            form.image.data.save(os.path.join('static/uploads', filename))
+            task.image = filename
         db.session.commit()
-    return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
+    return render_template('edit_task.html', form=form, task=task)
 
 
 @app.route('/toggle_complete/<int:task_id>', methods=['POST'])
 @login_required
 def toggle_complete(task_id):
-    task = db.session.get(Task, task_id)  # Cambiar aquí
+    task = db.session.get(Task, task_id)
     if task and task.owner == current_user:
         task.is_complete = not task.is_complete
         db.session.commit()

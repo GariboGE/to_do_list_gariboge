@@ -38,3 +38,9 @@ Thumbs.db
 
 # Falke8 config file
 .flake8
+
+# pytest config file
+pytest.ini
+
+# Sonar Qube
+sonar-project.properties

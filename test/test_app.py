@@ -17,58 +17,101 @@ class TestConfig:
 def client():
     app.config.from_object(TestConfig)
     with app.app_context():
-        db.create_all()  # Crear la base de datos en memoria
+        db.create_all() 
         yield app.test_client()
         db.session.remove()
-        db.drop_all()  # Limpiar la base de datos después de las pruebas
+        db.drop_all() 
 
 
 @pytest.fixture
 def authenticated_client(client):
     with client.application.app_context():
-        # Crea un nuevo usuario
         user = User(username='testuser', password=generate_password_hash('testpass'))
         db.session.add(user)
-        db.session.commit()  # Asegúrate de guardar el usuario en la base de datos
+        db.session.commit()
 
-        # Inicia sesión con el usuario creado
         client.post('/login', data={
             'username': 'testuser',
             'password': 'testpass'
         })
-        yield client  # Asegúrate de que el cliente autenticado se devuelve
+        yield client
 
 
-def test_create_task(authenticated_client):
+def test_login_correct_credentials(client):
+    with client.application.app_context():
+        user = User(username='EricG1', password=generate_password_hash('1234'))
+        db.session.add(user)
+        db.session.commit()
+
+        response = client.post('/login', data={
+            'username': 'EricG1',
+            'password': '1234'
+        })
+        
+        assert response.status_code == 302
+        with client.session_transaction() as session:
+            assert '_user_id' in session
+            assert session['_user_id'] == str(user.id)
+            
+
+def test_login_incorrect_credentials(client):
+    with client.application.app_context():
+        user = User(username='EricG2', password=generate_password_hash('1234'))
+        db.session.add(user)
+        db.session.commit()
+
+        response = client.post('/login', data={
+            'username': 'EricG2',
+            'password': '5678'
+        })
+        
+        assert response.status_code == 200
+        with client.session_transaction() as session:
+            assert '_user_id' not in session
+
+
+def test_create_task_invalid(authenticated_client):
     with authenticated_client.application.app_context():
-        # Verifica si el usuario está autenticado
-        response = authenticated_client.get('/dashboard')
-        assert response.status_code == 200  # Debe ser 200 si el usuario está autenticado
         response = authenticated_client.post('/dashboard', data={
-            'title': 'TestTask',
-            'description': 'ThisIsATestTask',
+            'title': '',
+            'description': 'This is a test task',
+            'priority': '1',
+            'image': None
+        })
+
+        # 200 because the form only refresh the page but the task doesnt create
+        assert response.status_code == 200
+        task = Task.query.filter_by(description='This is a test task').first()
+        assert task is None
+        
+def test_create_task_valid(authenticated_client):
+    with authenticated_client.application.app_context():
+        response = authenticated_client.get('/dashboard')
+        assert response.status_code == 200 
+        response = authenticated_client.post('/dashboard', data={
+            'title': 'Test Task',
+            'description': 'This is a test task',
             'priority': '4',
             'image': None # ANy file you wants to upload on in the test
         })
 
-        assert response.status_code == 302  # Redirecciona después de crear
+        assert response.status_code == 302
         task = Task.query.filter_by(title='Test Task').first()
         assert task is not None
         assert task.description == 'This is a test task'
-        assert task.priority == 1  # Asegúrate de que el tipo sea correcto
+        assert task.priority == 4
 
 
 def test_edit_task(authenticated_client):
     with authenticated_client.application.app_context():
-        # Obtener el usuario autenticado
         user = User.query.filter_by(username='testuser').first()
 
-        # Primero, crea una tarea
+        # Create a task to edit in the future
         task = Task(title='Original Task', description='Original Description', priority=1, owner=user)
         db.session.add(task)
         db.session.commit()
 
-        # Ahora edita la tarea
+        # Edit the task
         response = authenticated_client.post(f'/edit_task/{task.id}', data={
             'title': 'Updated Task',
             'description': 'Updated Description',
@@ -76,28 +119,43 @@ def test_edit_task(authenticated_client):
             'image': None
         })
 
-        assert response.status_code == 302  # Redirecciona después de editar
+        assert response.status_code == 302
         updated_task = db.session.get(Task, task.id)
         assert updated_task.title == 'Updated Task'
         assert updated_task.description == 'Updated Description'
         assert updated_task.priority == 2
 
 
-def test_toggle_complete(authenticated_client):
+def test_toggle_complete_existing_task(authenticated_client):
     with authenticated_client.application.app_context():
-        # Obtener el usuario autenticado
         user = User.query.filter_by(username='testuser').first()
 
-        # Primero, crea una tarea
+        # Create a task to edit in the future
         task = Task(title='Complete Me', description='To be completed', priority=1, owner=user, is_complete=False)
         db.session.add(task)
         db.session.commit()
 
-        # Ahora marca la tarea como completada
+        # Mark the task as complete
         response = authenticated_client.post(f'/toggle_complete/{task.id}')
-        assert response.status_code == 302  # Redirecciona después de marcar como completada
+        assert response.status_code == 302
         updated_task = db.session.get(Task, task.id)
-        assert updated_task.is_complete is True  # Asegúrate de que la tarea ahora esté marcada como completada
+        assert updated_task.is_complete is True
+        
+
+def test_toggle_complete_non_existing_task(authenticated_client):
+    with authenticated_client.application.app_context():
+        user = User.query.filter_by(username='testuser').first()
+
+        # Create a task to edit in the future
+        task = Task(title='Complete Me', description='To be completed', priority=1, owner=user, is_complete=False)
+        db.session.add(task)
+        db.session.commit()
+
+        # Find the task with a +1 to the created task is not in the DB
+        response = authenticated_client.post(f'/toggle_complete/{task.id + 1}')
+        assert response.status_code == 302
+        updated_task = db.session.get(Task, task.id + 1)
+        assert updated_task is None
 
 
 if __name__ == '__main__':
