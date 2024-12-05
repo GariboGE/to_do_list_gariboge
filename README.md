@@ -21,6 +21,6 @@ Este es un proyecto de aplicación web de lista de tareas (To-Do List) desarroll
    
 3. Crea y activa un entorno virtual:
 
-4. Instle la dependencias
+4. Instale la dependencias
    pip install -r requirements.txt
 
