@@ -4,6 +4,7 @@ import os
 # Crear instancia global de OAuth
 oauth = OAuth()
 
+
 def init_oauth(app):
     oauth.init_app(app)  # Conecta OAuth con la app Flask
 
@@ -18,6 +19,6 @@ def init_oauth(app):
         userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
         jwks_uri='https://www.googleapis.com/oauth2/v3/certs',
         client_kwargs={
-            'scope': 'openid email profile'  # Asegúrate de incluir 'openid'
+            'scope': 'openid email profile'
     }
 )

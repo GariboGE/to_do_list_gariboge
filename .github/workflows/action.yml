@@ -14,7 +14,6 @@ jobs:
       OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
       OAUTH_REDIRECT_URI: http://localhost:5000/oauth/auth/callback
 
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -31,4 +30,5 @@ jobs:
 
     - name: Run tests
       run: |
+        Flask run
         pytest --cov=app --cov-report=html

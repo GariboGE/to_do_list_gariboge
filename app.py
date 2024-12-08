@@ -3,11 +3,8 @@ from flask_login import LoginManager, current_user
 from models.models import db, User
 from routes.auth import auth_bp    # Blueprint para autenticación
 from routes.tasks import tasks_bp  # Blueprint para tareas
-from routes.oauth import oauth_bp  # Blueprint para OAuth
-from dotenv import load_dotenv
+from routes.oauth import oauth_bp
 
-# Cargar el archivo .env
-load_dotenv()
 
 def create_app():
     app = Flask(__name__)
@@ -40,6 +37,7 @@ def create_app():
     app.register_blueprint(oauth_bp, url_prefix='/oauth')
 
     return app
+
 
 if __name__ == "__main__":
     app = create_app()

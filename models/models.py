@@ -3,6 +3,7 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -10,6 +11,7 @@ class User(UserMixin, db.Model):
     oauth_provider = db.Column(db.String(50), nullable=True)
     oauth_id = db.Column(db.String(100), nullable=True)
     tasks = db.relationship('Task', backref='owner', lazy=True)
+
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)

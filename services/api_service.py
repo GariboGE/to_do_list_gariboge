@@ -2,6 +2,7 @@ import requests
 
 CHEAPSHARK_API_URL = "https://www.cheapshark.com/api/1.0/deals"
 
+
 def get_game_deals():
     try:
         response = requests.get(CHEAPSHARK_API_URL, params={"storeID": "1", "upperPrice": "20"})

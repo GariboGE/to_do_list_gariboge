@@ -6,6 +6,7 @@ import secrets
 
 oauth_bp = Blueprint('oauth', __name__)
 
+
 @oauth_bp.before_app_request
 def setup_oauth():
     init_oauth(current_app)

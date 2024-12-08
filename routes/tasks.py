@@ -6,6 +6,7 @@ from services.api_service import get_game_deals
 
 tasks_bp = Blueprint('tasks', __name__)
 
+
 @tasks_bp.route('/')
 @login_required
 def home():

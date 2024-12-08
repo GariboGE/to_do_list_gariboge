@@ -6,6 +6,7 @@ from services.auth_service import create_user, get_user_by_username
 
 auth_bp = Blueprint('auth', __name__)
 
+
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
