@@ -4,7 +4,9 @@ from models.models import db, User
 from routes.auth import auth_bp    # Blueprint para autenticación
 from routes.tasks import tasks_bp  # Blueprint para tareas
 from routes.oauth import oauth_bp
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)

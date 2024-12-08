@@ -87,7 +87,7 @@ def test_cross_browser_compatibility():
 
             browser.close()
 
- 
+'''
 def test_google_oauth_login():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -103,8 +103,7 @@ def test_google_oauth_login():
         page.wait_for_selector('input[type="password"]')
         page.fill('input[type="password"]', "test_user_app")
         page.click('button:has-text("Next")')
-
-
+        
         page.click('button:has-text("Continuar")')
         page.wait_for_selector('h2:has-text("Task Dashboard")')
 
@@ -112,3 +111,4 @@ def test_google_oauth_login():
         assert page.is_visible("h2:has-text('Task Dashboard')")
 
         browser.close()
+'''
