@@ -31,7 +31,6 @@ jobs:
     - name: Playwright dependencies
       run: |
         playwright install
-        playwright install
         sudo apt update
         sudo apt install -y \
           libwoff1 \
@@ -47,6 +46,8 @@ jobs:
           libglib2.0-0 \
           libgtk-3-0 \
           libpango1.0-0
+        sudo apt install -y libwoff2dec1 libvpx7 libevent-2.1-7 libopus0 libgstreamer1.0-* libflite1 libavif13 libharfbuzz0b libhyphen0 libmanette-0.2 libgles2-mesa-dev libx264
+        playwright install
 
     - name: Run Flask (Test App)
       run: |
