@@ -14,49 +14,55 @@ jobs:
       OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
       OAUTH_REDIRECT_URI: http://localhost:5000/oauth/auth/callback
 
-    container:
-      image: python:3.12-slim
-
     steps:
 
-      # 🐍 Instalar dependencias del sistema y Playwright
-      - name: Install system dependencies
-        run: |
-          apt update && apt upgrade -y
-          apt install -y \
-            ffmpeg \
-            libssl-dev \
-            libx264 \
-            curl \
-            git \
-            ubuntu-restricted-extras
+      # 🚀 1. Checkout del código fuente
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # 📦 Instalar Playwright y sus dependencias
-      - name: Install Playwright
-        run: |
-          pip install --upgrade pip
-          pip install playwright
-          playwright install
+      # 🐍 2. Configurar Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-      # 📂 Clonar tu repositorio y configurar tu entorno
-      - name: Clone repository
-        run: |
-          git clone https://github.com/usuario/repo.git
-
-      # 🔧 Instalar dependencias de Python
+      # 📦 3. Instalar dependencias de Python
       - name: Install dependencies
         run: |
-          cd repo
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 🔥 Ejecutar tu aplicación Flask
+      # 🛠️ 4. Instalar dependencias del sistema y multimedia
+      - name: Update and Install System Dependencies
+        run: |
+          sudo apt update && sudo apt upgrade -y
+
+          # Habilitar repositorios adicionales necesarios
+          sudo add-apt-repository multiverse -y
+          sudo add-apt-repository universe -y
+          sudo add-apt-repository restricted -y
+          sudo apt update
+
+          # Instalar paquetes multimedia y soporte adicional
+          sudo apt install -y \
+            ffmpeg \
+            libavcodec-extra \
+            libx264 \
+            libavif-dev \
+            libssl-dev \
+            ubuntu-restricted-extras
+
+          # Verificar la instalación de libx264
+          ffmpeg -codecs | grep libx264
+          sudo apt update && sudo apt upgrade -y
+
+      # 🚀 Ejecutar Flask (Test App)
       - name: Run Flask (Test App)
         run: |
           export FLASK_APP=app.py
           flask run --host=localhost --port=5000 &
 
-      # ✅ Ejecutar pruebas con pytest y Playwright
+      # ✅ Ejecutar pytest para pruebas y cobertura
       - name: Run tests
         run: |
           pytest --cov=app --cov-report=html
-          playwright test
