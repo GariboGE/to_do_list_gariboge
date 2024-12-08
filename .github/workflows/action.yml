@@ -14,90 +14,49 @@ jobs:
       OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
       OAUTH_REDIRECT_URI: http://localhost:5000/oauth/auth/callback
 
+    container:
+      image: python:3.12-slim
+
     steps:
 
-      # 🚀 1. Checkout del código fuente
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # 🐍 2. Configurar Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      # 📦 3. Instalar dependencias de Python
-      - name: Install dependencies
+      # 🐍 Instalar dependencias del sistema y Playwright
+      - name: Install system dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # 🛠️ 4. Actualizar e instalar dependencias del sistema y Playwright
-      - name: Update and Install System & Playwright Dependencies
-        run: |
-          # Actualizar el sistema y repositorios
-          sudo apt update && sudo apt upgrade -y
-
-          # Habilitar repositorios adicionales necesarios
-          sudo add-apt-repository multiverse -y
-          sudo add-apt-repository universe -y
-          sudo add-apt-repository restricted -y
-          sudo add-apt-repository ppa:graphics-drivers/ppa -y
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          sudo apt update
-
-          # Instalar paquetes multimedia y dependencias adicionales
-          sudo apt install -y \
-            software-properties-common \
-            gnupg \
-            curl \
-            ubuntu-restricted-extras \
+          apt update && apt upgrade -y
+          apt install -y \
             ffmpeg \
-            libavcodec-extra \
-            libavif-dev \
-            libglib2.0-0 \
-            libgtk-3-0 \
-            libpango1.0-0 \
-            libx264 \
             libssl-dev \
-            libevent-2.1-7 \
-            libopus0 \
-            libavif13 \
+            libx264 \
+            curl \
+            git \
             ubuntu-restricted-extras
 
-          # Verificar instalación de libx264
-          ffmpeg -codecs | grep libx264
-
-          # Instalar Playwright y dependencias necesarias
+      # 📦 Instalar Playwright y sus dependencias
+      - name: Install Playwright
+        run: |
+          pip install --upgrade pip
+          pip install playwright
           playwright install
 
-          
-      - name: Update System & Install libx264
+      # 📂 Clonar tu repositorio y configurar tu entorno
+      - name: Clone repository
         run: |
-          sudo apt update && sudo apt upgrade -y
+          git clone https://github.com/usuario/repo.git
 
-          # Asegurarse de habilitar repositorios adicionales necesarios
-          sudo add-apt-repository multiverse -y
-          sudo add-apt-repository universe -y
-          sudo add-apt-repository restricted -y
-          sudo apt update
+      # 🔧 Instalar dependencias de Python
+      - name: Install dependencies
+        run: |
+          cd repo
+          pip install -r requirements.txt
 
-          # Instalación manual de ffmpeg y soporte multimedia
-          sudo apt install -y ffmpeg \
-          libavcodec-extra \
-          libx264 \
-          libavif-dev \
-          libssl-dev \
-          ubuntu-restricted-extras
-
-
-      # 🚀 5. Ejecutar Flask (Test App)
+      # 🔥 Ejecutar tu aplicación Flask
       - name: Run Flask (Test App)
         run: |
           export FLASK_APP=app.py
           flask run --host=localhost --port=5000 &
 
-      # ✅ Ejecutar pytest para testing y reporte cobertura
+      # ✅ Ejecutar pruebas con pytest y Playwright
       - name: Run tests
         run: |
           pytest --cov=app --cov-report=html
+          playwright test
