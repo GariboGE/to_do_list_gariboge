@@ -18,16 +18,26 @@
         </div>
         <button type="submit" class="btn btn-primary">Add Task</button>
     </form>
+    <h2>Game Deals</h2>
+    <ul>
+        {% for deal in game_deals %}
+            <li>
+                <strong>{{ deal.title }}</strong> - {{ deal.salePrice }} USD
+                <br>Original Price: {{ deal.normalPrice }} USD
+                <br><a href="{{ deal.dealID }}" target="_blank" class="btn btn-primary">View Deal</a>
+            </li>
+        {% endfor %}
+    </ul>
 
     <h3>Your Tasks</h3>
     <ul id="task-list">
     {% for task in tasks if not task.is_complete %}
         <li>
             {{ task.title }} - Priority: {{ task.priority }}
-            <form method="POST" action="{{ url_for('toggle_complete', task_id=task.id) }}">
+            <form method="POST" action="{{ url_for('tasks.toggle_complete', task_id=task.id) }}">
                 <input type="checkbox" name="is_complete" value="true" {% if task.is_complete %}checked{% endif %} onchange="this.form.submit()">
             </form>
-            <a href="{{ url_for('edit_task', task_id=task.id) }}">Edit</a>
+            <a href="{{ url_for('tasks.edit_task', task_id=task.id) }}">Edit</a>
             {% if task.image %}
                 <a href="{{ url_for('static', filename='uploads/' + task.image) }}" target="_blank">
                     <img src="{{ url_for('static', filename='uploads/' + task.image) }}" alt="task image" width="100">

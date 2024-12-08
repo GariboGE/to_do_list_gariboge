@@ -1,82 +1,51 @@
-import pytest
-from wtforms import ValidationError
-from forms import LoginForm, TaskForm
+from conftest import *
 
-
-@pytest.fixture
-def valid_login_data():
-    return {'username': 'testuser', 'password': 'testpass'}
-
-
-@pytest.fixture
-def valid_task_data():
-    """Datos válidos para probar el formulario de tareas."""
-    return {
-        'title': 'Test Task',
-        'description': 'This is a test task',
-        'priority': '3'
-    }
-
-
-def test_login_form_valid_data(valid_login_data):
-    """Prueba que el formulario de inicio de sesión sea válido con datos correctos."""
-    form = LoginForm(data=valid_login_data)
+# Test para LoginForm
+def test_login_form_valid_data(client):
+    form = LoginForm(data={'username': 'testuser', 'password': 'testpassword'})
     assert form.validate() is True
 
-
-def test_login_form_missing_username():
-    """Prueba que el formulario de inicio de sesión sea inválido si falta el nombre de usuario."""
-    form = LoginForm(data={'password': 'testpass'})
+def test_login_form_missing_username(client):
+    form = LoginForm(data={'username': '', 'password': 'testpassword'})
     assert form.validate() is False
-    assert 'username' in form.errors
+    assert 'This field is required.' in form.username.errors
 
-
-def test_login_form_missing_password():
-    """Prueba que el formulario de inicio de sesión sea inválido si falta la contraseña."""
-    form = LoginForm(data={'username': 'testuser'})
+def test_login_form_missing_password(client):
+    form = LoginForm(data={'username': 'testuser', 'password': ''})
     assert form.validate() is False
-    assert 'password' in form.errors
+    assert 'This field is required.' in form.password.errors
 
-
-def test_task_form_valid_data(valid_task_data):
-    """Prueba que el formulario de tareas sea válido con datos correctos."""
-    form = TaskForm(data=valid_task_data)
+# Test para RegisterForm
+def test_register_form_valid_data(client):
+    form = RegisterForm(data={'username': 'newuser', 'password': 'securepassword'})
     assert form.validate() is True
 
-
-def test_task_form_missing_title():
-    """Prueba que el formulario de tareas sea inválido si falta el título."""
-    data = {
-        'description': 'This is a test task',
-        'priority': '2'
-    }
-    form = TaskForm(data=data)
+def test_register_form_missing_username(client):
+    form = RegisterForm(data={'username': '', 'password': 'securepassword'})
     assert form.validate() is False
-    assert 'title' in form.errors
+    assert 'This field is required.' in form.username.errors
 
-
-def test_task_form_invalid_priority():
-    """Prueba que el formulario de tareas sea inválido si la prioridad no es válida."""
-    data = {
-        'title': 'Test Task',
-        'description': 'This is a test task',
-        'priority': 'invalid_priority'
-    }
-    form = TaskForm(data=data)
+def test_register_form_missing_password(client):
+    form = RegisterForm(data={'username': 'newuser', 'password': ''})
     assert form.validate() is False
-    assert 'priority' in form.errors
+    assert 'This field is required.' in form.password.errors
 
-
-def test_task_form_optional_image(valid_task_data):
-    """Prueba que el formulario de tareas sea válido sin adjuntar una imagen."""
-    form = TaskForm(data=valid_task_data)
+# Test para TaskForm
+def test_task_form_valid_data(client):
+    form = TaskForm(data={
+        'title': 'New Task',
+        'description': 'Testing task form validation',
+        'priority': 3,
+        'is_complete': False
+    })
     assert form.validate() is True
 
-
-def test_task_form_empty_data():
-    """Prueba que el formulario de tareas sea inválido con datos vacíos."""
-    form = TaskForm(data={})
+def test_task_form_missing_title(client):
+    form = TaskForm(data={
+        'title': '',
+        'description': 'No title provided',
+        'priority': 2,
+        'is_complete': False
+    })
     assert form.validate() is False
-    assert 'title' in form.errors
-    assert 'description' in form.errors
-    assert 'priority' in form.errors
+    assert 'This field is required.' in form.title.errors

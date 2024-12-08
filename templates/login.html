@@ -18,7 +18,8 @@
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
-        <p class="mt-3">Don't have an account? <a href="{{ url_for('register') }}">Register here</a>.</p>
+        <a href="{{ url_for('oauth.oauth_login') }}" class="btn btn-primary">Login with Google</a>
+        <p class="mt-3">Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.</p>
     </div>
 </div>
 {% endblock %}
