@@ -35,42 +35,36 @@ jobs:
       # 🛠️ 4. Actualizar e instalar dependencias del sistema y Playwright
       - name: Update and Install System & Playwright Dependencies
         run: |
-          # Actualizar y mejorar paquetes del sistema
+          # Actualizar el sistema y repositorios
           sudo apt update && sudo apt upgrade -y
 
-          # Instalar dependencias básicas y repositorios adicionales
+          # Instalar paquetes básicos y dependencias necesarias
           sudo apt install -y \
             software-properties-common \
             gnupg \
             curl \
-            libwoff2dec1 \
-            libvpx7 \
-            libevent-2.1-7 \
-            libopus0 \
-            libavif13 \
-            libharfbuzz0b \
-            libhyphen0 \
-            libGLESv2-2 \
-            libx264 \
-            libgstreamer1.0-* \
-            libflite1 \
-            libgstallocators1.0-0 \
-            libgstapp1.0-0 \
-            libgstpbutils1.0-0 \
-            libgstaudio1.0-0 \
-            libgstgl1.0-0 \
-            libgsttag1.0-0 \
-            libgstvideo1.0-0 \
-            libgstcodecparsers1.0-0 \
-            libgstfft1.0-0 \
+            ubuntu-restricted-extras \
+            ffmpeg \
+            libavcodec-extra \
+            libavif-dev \
             libglib2.0-0 \
             libgtk-3-0 \
-            libpango1.0-0
+            libpango1.0-0 \
+            libx264 \
+            libssl-dev \
+            libevent-2.1-7 \
+            libopus0 \
+            libavif13
 
-          # Instalar Playwright y sus dependencias necesarias
+          # Agregar repositorios adicionales si es necesario
+          sudo add-apt-repository ppa:graphics-drivers/ppa -y
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt update
+
+          # Instalar Playwright y dependencias necesarias
           playwright install
 
-      # 🚀 5. Ejecutar la aplicación Flask (Testing App)
+      # 🚀 5. Ejecutar la aplicación Flask para Testing
       - name: Run Flask (Test App)
         run: |
           export FLASK_APP=app.py
