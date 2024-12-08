@@ -35,8 +35,3 @@ def authenticated_client(client):
             'password': 'testpass'
         })
         yield client
-
-
-@pytest.fixture
-def mocker_client(mocker):
-    return mocker
