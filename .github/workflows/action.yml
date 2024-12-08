@@ -32,6 +32,16 @@ jobs:
       run: |
         sudo apt update && sudo apt upgrade -y
         sudo apt install -y \
+          software-properties-common \
+          gnupg \
+          curl
+    
+        # Agregar repositorios adicionales si es necesario
+        sudo add-apt-repository ppa:libreoffice/ppa -y
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt update
+    
+        sudo apt install -y \
           libwoff2dec1 \
           libvpx7 \
           libevent-2.1-7 \
@@ -39,29 +49,29 @@ jobs:
           libavif13 \
           libharfbuzz0b \
           libhyphen0 \
-          libmanette-0.2 \
           libGLESv2-2 \
           libx264 \
           libgstreamer1.0-* \
           libflite1 \
+          libgstallocators1.0-0 \
+          libgstapp1.0-0 \
+          libgstpbutils1.0-0 \
+          libgstaudio1.0-0 \
+          libgstgl1.0-0 \
+          libgsttag1.0-0 \
+          libgstvideo1.0-0 \
+          libgstcodecparsers1.0-0 \
+          libgstfft1.0-0 \
           libflite-usenglish1 \
-          libflite-cmu-grapheme-lang1 \
-          libflite-cmu-grapheme-lex1 \
-          libflite-cmu-indic-lang1 \
-          libflite-cmu-indic-lex1 \
-          libflite-cmulex1 \
-          libflite-cmu-time-awb1 \
-          libflite-cmu-us-awb1 \
-          libflite-cmu-us-kal16 \
-          libflite-cmu-us-kal \
-          libflite-cmu-us-rms \
-          libflite-cmu-us-slt \
-          libavif13 \
-          libharfbuzz-icu0 \
-          libhyphen0 \
           libmanette-0.2 \
-          libGLESv2-2 \
-          libx264-dev
+          libavif13 \
+          libglib2.0-0 \
+          libgtk-3-0 \
+          libpango1.0-0
+    
+        # Instalar Playwright dependencias necesarias
+        playwright install
+      
       
 
     - name: Install Playwright dependencies
