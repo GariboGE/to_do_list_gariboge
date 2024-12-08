@@ -28,10 +28,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Playwright dependencies
+    - name: Install Playwright dependencies
       run: |
         playwright install
         sudo apt update
+        
         sudo apt install -y \
           libwoff1 \
           libvpx5 \
@@ -46,9 +47,49 @@ jobs:
           libglib2.0-0 \
           libgtk-3-0 \
           libpango1.0-0
-        sudo apt install -y libwoff2dec1 libvpx7 libevent-2.1-7 libopus0 libgstreamer1.0-* libflite1 libavif13 libharfbuzz0b libhyphen0 libmanette-0.2 libgles2-mesa-dev libx264
-        playwright install
 
+        sudo apt install -y \
+          libwoff2dec1 \
+          libvpx7 \
+          libevent-2.1-7 \
+          libopus0 \
+          libgstreamer1.0-* \
+          libflite1 \
+          libharfbuzz0b \
+          libhyphen0 \
+          libmanette-0.2 \
+          libGLESv2-2 \
+          libx264-dev \
+          libgstallocators1.0-0 \
+          libgstapp1.0-0 \
+          libgstpbutils1.0-0 \
+          libgstaudio1.0-0 \
+          libgstgl1.0-0 \
+          libgsttag1.0-0 \
+          libgstvideo1.0-0 \
+          libgstcodecparsers1.0-0 \
+          libgstfft1.0-0 \
+          libflite-usenglish1 \
+          libflite-cmu-grapheme-lang1 \
+          libflite-cmu-grapheme-lex1 \
+          libflite-cmu-indic-lang1 \
+          libflite-cmu-indic-lex1 \
+          libflite-cmulex1 \
+          libflite-cmu-time-awb1 \
+          libflite-cmu-us-awb1 \
+          libflite-cmu-us-kal16 \
+          libflite-cmu-us-kal \
+          libflite-cmu-us-rms \
+          libflite-cmu-us-slt \
+          libavif13 \
+          libharfbuzz-icu0 \
+          libhyphen0 \
+          libmanette-0.2 \
+          libGLESv2-2 \
+          libx264-dev
+
+          playwright install
+        
     - name: Run Flask (Test App)
       run: |
         export FLASK_APP=app.py
