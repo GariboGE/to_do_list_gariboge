@@ -17,7 +17,7 @@ def login_user(page: Page):
 
 def test_user_register_login():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto("http://localhost:5000/auth/register")
 
@@ -34,7 +34,7 @@ def test_user_register_login():
 
 def test_task_creation_and_management():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         # Autenticarse usando la función helper
@@ -53,7 +53,7 @@ def test_task_creation_and_management():
 
 def test_responsive_design():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         login_user(page)
@@ -90,7 +90,7 @@ def test_cross_browser_compatibility():
  
 def test_google_oauth_login():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context(locale="en-US")
         page = context.new_page()
 
