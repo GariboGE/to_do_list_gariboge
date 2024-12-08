@@ -28,7 +28,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Run Flask (Test App)
+      run: |
+        venv/bin/activate
+        export FLASK_APP=app.py
+        flask run --host=0.0.0.0 --port=5000 &
+
     - name: Run tests
       run: |
-        Flask run
         pytest --cov=app --cov-report=html
