@@ -38,6 +38,14 @@ jobs:
           # Actualizar el sistema y repositorios
           sudo apt update && sudo apt upgrade -y
 
+          # Agregar repositorios adicionales necesarios
+          sudo add-apt-repository multiverse -y
+          sudo add-apt-repository universe -y
+          sudo add-apt-repository restricted -y
+          sudo add-apt-repository ppa:graphics-drivers/ppa -y
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt update
+
           # Instalar paquetes básicos y dependencias necesarias
           sudo apt install -y \
             software-properties-common \
@@ -55,11 +63,6 @@ jobs:
             libevent-2.1-7 \
             libopus0 \
             libavif13
-
-          # Agregar repositorios adicionales si es necesario
-          sudo add-apt-repository ppa:graphics-drivers/ppa -y
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          sudo apt update
 
           # Instalar Playwright y dependencias necesarias
           playwright install
