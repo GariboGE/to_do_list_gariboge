@@ -71,6 +71,26 @@ jobs:
           # Instalar Playwright y dependencias necesarias
           playwright install
 
+          
+      - name: Update System & Install libx264
+        run: |
+          sudo apt update && sudo apt upgrade -y
+
+          # Asegurarse de habilitar repositorios adicionales necesarios
+          sudo add-apt-repository multiverse -y
+          sudo add-apt-repository universe -y
+          sudo add-apt-repository restricted -y
+          sudo apt update
+
+          # Instalación manual de ffmpeg y soporte multimedia
+          sudo apt install -y ffmpeg \
+          libavcodec-extra \
+          libx264 \
+          libavif-dev \
+          libssl-dev \
+          ubuntu-restricted-extras
+
+
       # 🚀 5. Ejecutar Flask (Test App)
       - name: Run Flask (Test App)
         run: |
