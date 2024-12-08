@@ -38,7 +38,7 @@ jobs:
           # Actualizar el sistema y repositorios
           sudo apt update && sudo apt upgrade -y
 
-          # Agregar repositorios adicionales necesarios
+          # Habilitar repositorios adicionales necesarios
           sudo add-apt-repository multiverse -y
           sudo add-apt-repository universe -y
           sudo add-apt-repository restricted -y
@@ -46,7 +46,7 @@ jobs:
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           sudo apt update
 
-          # Instalar paquetes básicos y dependencias necesarias
+          # Instalar paquetes multimedia y dependencias adicionales
           sudo apt install -y \
             software-properties-common \
             gnupg \
@@ -62,18 +62,22 @@ jobs:
             libssl-dev \
             libevent-2.1-7 \
             libopus0 \
-            libavif13
+            libavif13 \
+            ubuntu-restricted-extras
+
+          # Verificar instalación de libx264
+          ffmpeg -codecs | grep libx264
 
           # Instalar Playwright y dependencias necesarias
           playwright install
 
-      # 🚀 5. Ejecutar la aplicación Flask para Testing
+      # 🚀 5. Ejecutar Flask (Test App)
       - name: Run Flask (Test App)
         run: |
           export FLASK_APP=app.py
           flask run --host=localhost --port=5000 &
 
-      # ✅ 6. Ejecutar pruebas con pytest y generar reporte de cobertura
+      # ✅ Ejecutar pytest para testing y reporte cobertura
       - name: Run tests
         run: |
           pytest --cov=app --cov-report=html
