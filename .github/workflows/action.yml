@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     env:
       OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
