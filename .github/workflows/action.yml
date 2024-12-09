@@ -54,6 +54,7 @@ jobs:
 
           # Verificar la instalación de libx264
           ffmpeg -codecs | grep libx264
+          sudo apt-get install yasm libvpx. libx264
           sudo apt update && sudo apt upgrade -y
 
       # 🚀 Ejecutar Flask (Test App)
