@@ -20,11 +20,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 🐍 2. Configurar Python
+
+ # 🐍 2. Configurar Python y Node.js
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: 3.12
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
       # 📦 3. Instalar dependencias de Python
       - name: Install dependencies
@@ -32,32 +38,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 🛠️ 4. Instalar dependencias del sistema y multimedia
-      - name: Update and Install System Dependencies
+      - name: Install Playwright dependencies
         run: |
-          # Actualizar el sistema y repositorios
-          sudo apt update && sudo apt upgrade -y
-
-          # Habilitar repositorios adicionales necesarios
-          sudo add-apt-repository multiverse -y
-          sudo add-apt-repository universe -y
-          sudo add-apt-repository restricted -y
-          sudo apt update
-
-          # Instalar paquetes multimedia y soporte adicional
-          sudo apt install -y \
-            ffmpeg \
-            libavcodec-extra \
-            libx264 \
-            libavif-dev \
-            libssl-dev \
-            ubuntu-restricted-extras \
-            yasm \
-            libvpx-dev
-
-          # Verificar instalación de ffmpeg y libx264
-          ffmpeg -codecs | grep libx264
-          sudo apt-cache policy libx264
+          npm install
+          npx playwright install --with-deps
 
       # 🚀 Ejecutar Flask (Test App)
       - name: Run Flask (Test App)
