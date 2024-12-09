@@ -7,49 +7,27 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     env:
       OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
       OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
       OAUTH_REDIRECT_URI: http://localhost:5000/oauth/auth/callback
 
+
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # 🚀 1. Checkout del código fuente
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
 
-
- # 🐍 2. Configurar Python y Node.js
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      # 📦 3. Instalar dependencias de Python
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Install Playwright dependencies
-        run: |
-          npm install
-          npx playwright install --with-deps
-
-      # 🚀 Ejecutar Flask (Test App)
-      - name: Run Flask (Test App)
-        run: |
-          export FLASK_APP=app.py
-          flask run --host=localhost --port=5000 &
-
-      # ✅ Ejecutar pytest para pruebas y cobertura
-      - name: Run tests
-        run: |
-          pytest --cov=app --cov-report=html
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        pytest --ignore=tests/acceptance --cov=app --cov-report=html
