@@ -35,6 +35,7 @@ jobs:
       # 🛠️ 4. Instalar dependencias del sistema y multimedia
       - name: Update and Install System Dependencies
         run: |
+          # Actualizar el sistema y repositorios
           sudo apt update && sudo apt upgrade -y
 
           # Habilitar repositorios adicionales necesarios
@@ -50,13 +51,13 @@ jobs:
             libx264 \
             libavif-dev \
             libssl-dev \
-            ubuntu-restricted-extras
+            ubuntu-restricted-extras \
+            yasm \
+            libvpx-dev
 
-          # Verificar la instalación de libx264
+          # Verificar instalación de ffmpeg y libx264
           ffmpeg -codecs | grep libx264
-          sudo apt-get install yasm libvpx. libx264
-          sudo apt-get install libx264-142 libx264-dev
-          sudo apt update && sudo apt upgrade -y
+          sudo apt-cache policy libx264
 
       # 🚀 Ejecutar Flask (Test App)
       - name: Run Flask (Test App)
