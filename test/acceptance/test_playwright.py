@@ -1,4 +1,24 @@
 from playwright.sync_api import sync_playwright, Page
+import pytest
+import subprocess
+import time
+import pytest
+
+
+@pytest.fixture(scope="session")
+def flask_app():
+    # Inicia el servidor Flask en un proceso independiente
+    flask_process = subprocess.Popen(
+        ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+    )
+    # Espera un poco para asegurarse de que Flask ha iniciado correctamente
+    time.sleep(3)
+
+    yield
+
+    # Al terminar, mata el proceso de Flask
+    flask_process.terminate()
+    flask_process.wait()
 
 
 def login_user(page: Page):
@@ -15,7 +35,7 @@ def login_user(page: Page):
         raise Exception("Login failed. Dashboard not visible.")
 
 
-def test_user_register_login():
+def test_user_register_login(flask_app):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -32,7 +52,7 @@ def test_user_register_login():
         assert page.goto("http://localhost:5000/tasks/dashboard")
 
 
-def test_task_creation_and_management():
+def test_task_creation_and_management(flask_app):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -51,7 +71,7 @@ def test_task_creation_and_management():
         browser.close()
 
 
-def test_responsive_design():
+def test_responsive_design(flask_app):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -71,7 +91,7 @@ def test_responsive_design():
         browser.close()
 
 
-def test_cross_browser_compatibility():
+def test_cross_browser_compatibility(flask_app):
     browsers = ["chromium", "firefox", "webkit"]
 
     for browser_type in browsers:
@@ -86,6 +106,7 @@ def test_cross_browser_compatibility():
             assert page.locator("h2:has-text('Task Dashboard')").is_visible()
 
             browser.close()
+
 
 '''
 def test_google_oauth_login():

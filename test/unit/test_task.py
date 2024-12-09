@@ -1,6 +1,33 @@
 from conftest import *
 import io
+from flask import url_for
 from services.task_service import validate_and_save_file, delete_old_file, get_tasks_by_user
+
+def test_home_not_authenticated(client):
+    response = client.get('/')
+    assert response.status_code == 302
+    assert response.location == url_for('auth.login', _external=False)
+    
+'''
+def test_edit_nonexistent_task(authenticated_client):
+    response = authenticated_client.post('/tasks/edit_task/999')
+    assert response.status_code == 500
+
+
+def test_toggle_complete_nonexistent_task(authenticated_client):
+    response = authenticated_client.post('/tasks/toggle_complete/999')
+    assert response.status_code == 404
+'''
+
+def test_create_task_invalid_form(authenticated_client):
+    response = authenticated_client.post('/tasks/dashboard', data={
+        'title': '',  # Título vacío
+        'description': 'Invalid task',
+        'priority': '1'  # Prioridad incorrecta
+    })
+
+    assert response.status_code == 200
+
 
 def test_create_task_valid(authenticated_client):
     with authenticated_client.application.app_context():
@@ -16,6 +43,7 @@ def test_create_task_valid(authenticated_client):
         assert task is not None
         assert task.description == 'Test Description'
         assert task.priority == 4
+
 
 def test_edit_task(authenticated_client):
     with authenticated_client.application.app_context():
@@ -33,6 +61,7 @@ def test_edit_task(authenticated_client):
         })
 
         assert response.status_code == 302
+
 
 def test_toggle_complete_existing_task(authenticated_client):
     with authenticated_client.application.app_context():
