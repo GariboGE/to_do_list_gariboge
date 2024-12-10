@@ -43,7 +43,7 @@
      source venv/bin/activate
      ```
 
-4. **Instala las dependencias**:
+4. **Install the dependencies:**:
    ```bash
    pip install -r requirements.txt
 
@@ -52,7 +52,7 @@
    - Edit the `.env` file and provide the required values:
    - Ensure to replace placeholders like `your_secret_key_here` with your actual values.
 
-6. **Incia la aplicacion**:
+6. **Start the app**:
    ```bash
    flask run
 
