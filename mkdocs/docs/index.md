@@ -1,6 +1,31 @@
 # Welcome to my ToDoList App
 
-[GitHub repository](https://github.com/GariboGE/to_do_list_gariboge).
+Go to the app [ToDoList](https://to-do-list-gariboge.onrender.com).
+
+## About the App
+
+The **ToDoList App** is a web-based task management tool designed to simplify daily organization and productivity. Built with Flask, it allows users to:
+
+- **Manage Tasks**: Add, edit, and delete tasks with ease.
+- **Prioritize Tasks**: Assign priority levels to tasks (`low`, `medium`, `high`, `urgent`).
+- **Attach Media**: Upload images or pdfs for enhanced task descriptions.
+- **Secure Authentication**: Log in via traditional methods or OAuth.
+- **Interactive Dashboard**: Displays tasks with sorting by priority and integrates game discount suggestions through CheapShark.
+
+This app is perfect for users looking for a straightforward yet powerful task organizer.
+
+## Technologies Used
+
+- **Flask**: Core framework for the web application.
+- **SQLAlchemy**: ORM for database interactions.
+- **Jinja2**: Templating engine used for generating dynamic HTML.
+- **Pytest**: Framework for testing the application.
+- **OAuth**: For secure user authentication.
+- **Playwright**: For end-to-end acceptance tests.
+- **GitHub Actions**: For continuous integration and running tests.
+- **Bootstrap**: Styling framework to ensure responsive design.
+
+For mor information visit the [GitHub repository](https://github.com/GariboGE/to_do_list_gariboge).
 
 ## Project layout
 
