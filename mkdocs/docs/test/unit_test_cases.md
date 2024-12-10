@@ -1,4 +1,4 @@
-# Unite test
+# Unit test
 
 ## 1. API
 
