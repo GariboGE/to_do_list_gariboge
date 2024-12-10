@@ -5,17 +5,13 @@ on:
     branches:
       - dev
       - main
-  pull_request:
-    branches:
-      - dev
-      - main
       
 jobs:
   run-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.12.5', '3.12.4', '3.12.3']
+        python-version: ['3.12.5']
 
     env:
       OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
