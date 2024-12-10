@@ -1,0 +1,11 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1733862327059,582,HTTP Request,200,OK,Thread Group 1-1,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,581,0,248
+1733862327644,298,HTTP Request,200,OK,Thread Group 1-1,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,297,0,0
+1733862329034,377,HTTP Request,200,OK,Thread Group 1-2,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,376,0,94
+1733862329412,153,HTTP Request,200,OK,Thread Group 1-2,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,152,0,0
+1733862331038,344,HTTP Request,200,OK,Thread Group 1-3,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,343,0,90
+1733862331383,171,HTTP Request,200,OK,Thread Group 1-3,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,171,0,0
+1733862333040,292,HTTP Request,200,OK,Thread Group 1-4,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,291,0,101
+1733862333333,230,HTTP Request,200,OK,Thread Group 1-4,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,229,0,0
+1733862335039,262,HTTP Request,200,OK,Thread Group 1-5,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,261,0,101
+1733862335301,157,HTTP Request,200,OK,Thread Group 1-5,text,true,,3109,145,1,1,https://to-do-list-gariboge.onrender.com/auth/login,156,0,0

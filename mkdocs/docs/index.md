@@ -27,7 +27,9 @@ This app is perfect for users looking for a straightforward yet powerful task or
 
 For mor information visit the [GitHub repository](https://github.com/GariboGE/to_do_list_gariboge).
 
-## Project layout
+## Project components and layout
+
+![Components diagram](buisness/diagram_c.png)
 
     .github/                # Contains GitHub-specific configurations and workflows
     forms/                  

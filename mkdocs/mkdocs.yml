@@ -26,5 +26,5 @@ nav:
   - Tests: 
       - Unit: test/unit_test_cases.md
       - Integration: test/integration_test_cases.md
-      - Acceptance: test/acceptance_test_cases.md
+      - Acceptance: test/performance.md
   - GitHub Actions: actions.md
