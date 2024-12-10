@@ -6,15 +6,14 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 from app import create_app, db, User
 
-# Configuración de tu Flask test
+
 class TestConfig:
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     WTF_CSRF_ENABLED = False
-    SERVER_NAME = 'localhost'
-    
+    SERVER_NAME = 'localhost'  
 
-# Configuración de Flask en memoria
+
 @pytest.fixture(scope="module")
 def test_app():
     app = create_app()
@@ -25,7 +24,6 @@ def test_app():
         db.drop_all()
 
 
-# Test para redireccionar al login OAuth
 def test_oauth_login_redirect(test_app):
     response = test_app.get(url_for('oauth.oauth_login'))
     assert response.status_code == 302
@@ -58,7 +56,7 @@ def test_oauth_callback_existing_user(mock_parse_id_token, mock_authorize_access
     assert response.location == url_for('tasks.dashboard', _external=False)
 
 
-# Test para el caso donde el nonce está ausente
+
 def test_oauth_callback_missing_nonce(test_app):
     response = test_app.get(url_for('oauth.oauth_callback'), follow_redirects=True)
     assert response.status_code == 200
@@ -80,7 +78,6 @@ def test_oauth_callback_new_user(mock_parse_id_token, mock_authorize_access_toke
     assert response.location == url_for('tasks.dashboard', _external=False)
 
 
-# Test para el caso donde el proveedor OAuth no devuelve el email
 @patch('services.oauth_service.oauth.google.authorize_access_token')
 @patch('services.oauth_service.oauth.google.get')
 def test_oauth_callback_missing_email(mock_get, mock_authorize_access_token, test_app):

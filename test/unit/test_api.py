@@ -2,10 +2,9 @@ import pytest
 from unittest.mock import patch, MagicMock
 from services.api_service import get_game_deals, requests
 
-# Test para verificar respuestas exitosas
+
 @patch('services.api_service.requests.get')
 def test_get_game_deals_success(mock_get):
-    # Configuración del mock de la respuesta de la API
     mock_response = MagicMock()
     mock_response.raise_for_status.return_value = None
     mock_response.json.return_value = [
@@ -29,20 +28,17 @@ def test_get_game_deals_success(mock_get):
 
     mock_get.return_value = mock_response
 
-    # Ejecutar la función
     deals = get_game_deals()
 
-    # Verificar que la función devuelve lo esperado
     assert len(deals) == 2
     assert deals[0]['title'] == 'Game 1'
     assert deals[1]['title'] == 'Game 2'
 
-# Test para manejar errores al hacer la solicitud GET
+
 @patch('services.api_service.requests.get')
 def test_get_game_deals_error(mock_get):
     mock_get.side_effect = requests.RequestException('API failure')
 
-    # Ejecutar la función y verificar el comportamiento en caso de error
     deals = get_game_deals()
 
-    assert deals == []  # La función debe devolver una lista vacía
+    assert deals == []

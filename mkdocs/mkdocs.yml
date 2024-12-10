@@ -1,0 +1,29 @@
+site_name: ToDoList App
+
+theme:
+  name: material
+  language: en
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          setup_commands:
+            - "import sys; import os; sys.path.insert(0, os.getenv('PYTHONPATH', ''))"
+          options:
+            docstring_style: google
+            show_root_toc_entry: false
+
+nav:
+  - Home: index.md
+  - Buisness logic:
+      - Models: buisness/models.md
+      - Task Service: buisness/task_service.md
+      - Auth Service: buisness/auth_service.md
+      - OAuth Service: buisness/oauth_service.md
+      - API Service: buisness/api_service.md
+  - Tests: 
+      - Unit: test/unit_test_cases.md
+      - Integration: test/integration_test_cases.md
+      - Acceptance: test/acceptance_test_cases.md

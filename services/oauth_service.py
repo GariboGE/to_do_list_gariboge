@@ -6,6 +6,19 @@ oauth = OAuth()
 
 
 def init_oauth(app):
+    """
+    Initialize and configure OAuth integration with the Flask application.
+
+    This function sets up the OAuth client for the Flask application and registers
+    the Google OAuth provider using environment variables for client ID and client secret.
+    It connects the OAuth client with the Flask app and specifies the necessary endpoints.
+
+    Args:
+        app (Flask): The Flask application instance to which OAuth is attached.
+
+    Returns:
+        None
+    """
     oauth.init_app(app)  # Conecta OAuth con la app Flask
 
     # Configuración del proveedor Google OAuth

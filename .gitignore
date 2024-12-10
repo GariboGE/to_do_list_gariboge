@@ -50,3 +50,7 @@ sonar-project.properties
 
 # Personal things
 project_criteria/
+
+# coverage
+.coverage
+htmlcov/
