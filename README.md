@@ -58,6 +58,7 @@
 
 The application will be available at http://127.0.0.1:5000.
 
+---
 
 ## 🧪 Test
 - Make sure that the dependencies are installed and the virtual environment is active.
@@ -71,3 +72,13 @@ The application will be available at http://127.0.0.1:5000.
    ```bash
    pytest
 - This will generate an HTML and console report with the project coverage.
+
+---
+
+## Documentation
+-  You can view the documentation by following the commands below:
+    ```bash
+    cd mkdocs
+    mkdocs serve
+
+The documentation will be available at http://127.0.0.1:8000.
