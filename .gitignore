@@ -36,5 +36,21 @@ Thumbs.db
 # Temporary files
 *.tmp
 
-# Config files
+# Falke8 config file
 .flake8
+
+# coverage config file
+.coverage
+
+# pytest config file
+pytest.ini
+
+# Sonar Qube
+sonar-project.properties
+
+# Personal things
+project_criteria/
+
+# coverage
+.coverage
+htmlcov/

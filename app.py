@@ -1,118 +1,46 @@
-from flask import Flask, render_template, redirect, url_for, flash, abort
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User, Task
-from forms import LoginForm, RegisterForm, TaskForm
-import os
-from werkzeug.utils import secure_filename
+from flask import Flask, redirect, url_for
+from flask_login import LoginManager, current_user
+from models.models import db, User
+from routes.auth import auth_bp    # Blueprint para autenticación
+from routes.tasks import tasks_bp  # Blueprint para tareas
+from routes.oauth import oauth_bp
+from dotenv import load_dotenv
 
-app = Flask(__name__)
-app.config.from_object('config.Config')
-db.init_app(app)
+load_dotenv()
 
-with app.app_context():
-    db.create_all()
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object('config.Config')
 
-login_manager = LoginManager()
-login_manager.init_app(app)
+    # Configuración de la base de datos
+    db.init_app(app)
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+    # Inicializar base de datos en el contexto de la app
+    with app.app_context():
+        db.create_all()
 
-@app.route('/')
-def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
-    else:
-        return redirect(url_for('login'))
+    # Login Manager
+    login_manager = LoginManager()
+    login_manager.init_app(app)
 
-@app.route('/login',methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username = form.username.data).first()
-        if user and check_password_hash(user.password, form.password.data):
-            login_user(user)
-            return redirect(url_for('dashboard'))
-        flash('Invalid username or password')
-    return render_template('login.html', form=form)
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.session.get(User, int(user_id))
 
-@app.route('/register',methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        # Verifica si el nombre de usuario ya existe
-        existing_user = User.query.filter_by(username=form.username.data).first()
-        if existing_user:
-            flash('Username not available, please choose another one', 'warning')
-            return redirect(url_for('register'))
+    @app.route("/")
+    def index():
+        if current_user.is_authenticated:
+            return redirect(url_for('tasks.dashboard'))
+        return redirect(url_for('auth.login'))
 
-        # Si no existe, crea el nuevo usuario
-        hashed_password = generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Account created successfully! Please log in.', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+    # Registrar Blueprints
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(tasks_bp, url_prefix='/tasks')
+    app.register_blueprint(oauth_bp, url_prefix='/oauth')
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
-def dashboard():
-    form = TaskForm()
-    if form.validate_on_submit():
-        filename = None
-        if form.image.data:
-            filename = secure_filename(form.image.data.filename)
-            form.image.data.save(os.path.join('static/uploads', filename))
-        new_task = Task(
-            title=form.title.data,
-            description=form.description.data,
-            priority=form.priority.data,
-            owner=current_user,
-            image=filename
-        )
-        db.session.add(new_task)
-        db.session.commit()
-        return redirect(url_for('dashboard'))
-    tasks = Task.query.filter_by(owner=current_user).order_by(Task.priority).all()
-    return render_template('dashboard.html', form=form, tasks=tasks)
+    return app
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-@app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
-@login_required
-def edit_task(task_id):
-    task = Task.query.get_or_404(task_id)
-    if task.owner != current_user:
-        abort(403)
-
-    form = TaskForm(obj=task)
-    if form.validate_on_submit():
-        task.title = form.title.data
-        task.description = form.description.data
-        task.priority = form.priority.data
-        if form.image.data:
-            filename = secure_filename(form.image.data.filename)
-            form.image.data.save(os.path.join('static/uploads', filename))
-            task.image = filename
-        db.session.commit()
-        return redirect(url_for('dashboard'))
-    return render_template('edit_task.html', form=form, task=task)
-
-@app.route('/toggle_complete/<int:task_id>', methods=['POST'])
-@login_required
-def toggle_complete(task_id):
-    task = Task.query.get(task_id)
-    if task and task.owner == current_user:
-        task.is_complete = not task.is_complete
-        db.session.commit()
-    return redirect(url_for('dashboard'))
 
 if __name__ == "__main__":
+    app = create_app()
     app.run()
